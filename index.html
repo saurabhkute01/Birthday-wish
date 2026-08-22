@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Birthday Journey 🎂</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    color:white;
+    background:
+    radial-gradient(circle at 20% 20%,#45106b,transparent 35%),
+    radial-gradient(circle at 80% 80%,#062d52,transparent 35%),
+    #080014;
+}
+
+/* ---------- GENERAL ---------- */
+
+.screen{
+    width:100%;
+    height:100vh;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:20px;
+}
+
+.screen.active{
+    display:flex;
+    animation:screenIn .8s ease;
+}
+
+.card{
+    width:100%;
+    max-width:520px;
+    padding:35px 25px;
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:30px;
+    background:rgba(255,255,255,.07);
+    backdrop-filter:blur(18px);
+    box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+
+h1{
+    font-size:clamp(30px,8vw,48px);
+    margin:15px 0;
+}
+
+h2{
+    margin:15px 0;
+}
+
+p{
+    color:#ddd;
+    line-height:1.7;
+    font-size:16px;
+}
+
+button{
+    margin-top:25px;
+    padding:13px 27px;
+    border:2px solid #ff70c8;
+    border-radius:30px;
+    background:transparent;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+button:hover{
+    background:#ff70c8;
+    box-shadow:0 0 25px #ff70c8;
+    transform:translateY(-3px);
+}
+
+button:active{
+    transform:scale(.9);
+}
+
+.pink{
+    color:#ff8bd8;
+    text-shadow:0 0 20px #ff48bf;
+}
+
+/* ---------- LOADING ---------- */
+
+.loader{
+    width:230px;
+    height:7px;
+    background:#ffffff18;
+    border-radius:20px;
+    margin:25px auto;
+    overflow:hidden;
+}
+
+.loader-bar{
+    width:0%;
+    height:100%;
+    background:#ff70c8;
+    box-shadow:0 0 15px #ff70c8;
+    animation:loading 3s forwards;
+}
+
+/* ---------- GIFT ---------- */
+
+.gift{
+    font-size:100px;
+    animation:float 2s infinite;
+}
+
+/* ---------- CAKE ---------- */
+
+.cake{
+    position:relative;
+    width:180px;
+    height:150px;
+    margin:35px auto;
+    cursor:pointer;
+}
+
+.cake-body{
+    position:absolute;
+    bottom:0;
+    width:180px;
+    height:100px;
+    background:linear-gradient(#ff76bd,#e84692);
+    border-radius:15px 15px 20px 20px;
+    box-shadow:0 10px 25px #0005;
+}
+
+.cake-top{
+    position:absolute;
+    top:35px;
+    width:180px;
+    height:40px;
+    background:#ffb7df;
+    border-radius:50%;
+}
+
+.candle{
+    position:absolute;
+    top:0;
+    left:80px;
+    width:20px;
+    height:55px;
+    background:#fff;
+    border-radius:5px;
+}
+
+.flame{
+    position:absolute;
+    top:-27px;
+    left:2px;
+    font-size:25px;
+    animation:flame .5s infinite alternate;
+}
+
+/* ---------- MEMORY CARDS ---------- */
+
+.memories{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-top:25px;
+}
+
+.memory{
+    padding:18px 8px;
+    min-height:120px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    border:1px solid #ffffff25;
+    border-radius:18px;
+    background:#ffffff09;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.memory:hover{
+    transform:translateY(-7px);
+    background:#ff5ebd22;
+}
+
+.memory span{
+    font-size:35px;
+    margin-bottom:8px;
+}
+
+.memory p{
+    display:none;
+    font-size:12px;
+}
+
+.memory.open p{
+    display:block;
+}
+
+.memory.open span{
+    display:none;
+}
+
+/* ---------- MESSAGE ---------- */
+
+.message-box{
+    min-height:170px;
+    padding:22px;
+    margin-top:20px;
+    border-left:3px solid #ff70c8;
+    background:#ffffff09;
+    text-align:left;
+    border-radius:10px;
+}
+
+#typing{
+    color:#eee;
+}
+
+/* ---------- CERTIFICATE ---------- */
+
+.certificate{
+    padding:30px 20px;
+    border:2px solid #ffd0ee;
+    border-radius:20px;
+    background:
+    linear-gradient(135deg,#ffffff0b,#ff5ebd0b);
+    box-shadow:0 0 30px #ff5ebd20;
+}
+
+.certificate h2{
+    color:#ffd0ee;
+}
+
+.certificate .name{
+    font-size:32px;
+    color:#ff8bd8;
+    margin:15px 0;
+}
+
+/* ---------- FINAL ---------- */
+
+.big-heart{
+    font-size:80px;
+    animation:heartbeat 1.2s infinite;
+}
+
+/* ---------- EFFECTS ---------- */
+
+.star{
+    position:fixed;
+    width:3px;
+    height:3px;
+    border-radius:50%;
+    background:white;
+    animation:twinkle 2s infinite alternate;
+}
+
+.heart{
+    position:fixed;
+    bottom:-50px;
+    font-size:25px;
+    pointer-events:none;
+    animation:heartRise 5s linear forwards;
+}
+
+.confetti{
+    position:fixed;
+    top:-20px;
+    width:8px;
+    height:14px;
+    pointer-events:none;
+    animation:confettiFall 3s linear forwards;
+}
+
+/* ---------- ANIMATIONS ---------- */
+
+@keyframes loading{
+    to{width:100%}
+}
+
+@keyframes screenIn{
+    from{
+        opacity:0;
+        transform:scale(.95) translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:scale(1) translateY(0);
+    }
+}
+
+@keyframes float{
+    50%{
+        transform:translateY(-15px) rotate(5deg);
+    }
+}
+
+@keyframes flame{
+    from{transform:scale(1)}
+    to{transform:scale(1.15)}
+}
+
+@keyframes heartbeat{
+    50%{transform:scale(1.18)}
+}
+
+@keyframes twinkle{
+    from{opacity:.2}
+    to{opacity:1}
+}
+
+@keyframes heartRise{
+    to{
+        transform:translateY(-110vh) rotate(360deg);
+        opacity:0;
+    }
+}
+
+@keyframes confettiFall{
+    to{
+        transform:translateY(110vh) rotate(720deg);
+        opacity:0;
+    }
+}
+
+/* ---------- MOBILE ---------- */
+
+@media(max-width:500px){
+
+    .card{
+        padding:28px 18px;
+    }
+
+    .memories{
+        gap:7px;
+    }
+
+    .memory{
+        min-height:105px;
+    }
+
+    .memory span{
+        font-size:30px;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+
+<!-- =========================
+     SCREEN 1 : LOADING
+========================= -->
+
+<section class="screen active" id="screen1">
+
+    <div class="card">
+
+        <div style="font-size:60px">✨</div>
+
+        <h1>Preparing Something Special...</h1>
+
+        <p>
+            A little surprise is being prepared for you.
+        </p>
+
+        <div class="loader">
+            <div class="loader-bar"></div>
+        </div>
+
+        <p>Loading happiness... 💖</p>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SCREEN 2 : START
+========================= -->
+
+<section class="screen" id="screen2">
+
+    <div class="card">
+
+        <div class="gift">🎁</div>
+
+        <h1>
+            Hey <span class="pink">Arya</span> 👀
+        </h1>
+
+        <p>
+            Someone has spent a little time
+            creating something just for you.
+        </p>
+
+        <button onclick="nextScreen(3)">
+            Start Your Birthday Journey ✨
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SCREEN 3 : QUESTION
+========================= -->
+
+<section class="screen" id="screen3">
+
+    <div class="card">
+
+        <div style="font-size:65px">💌</div>
+
+        <h1>Ready?</h1>
+
+        <p>
+            There are a few little surprises
+            waiting for you.
+        </p>
+
+        <button onclick="nextScreen(4)">
+            Yes, Show Me! 💖
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SCREEN 4 : CAKE
+========================= -->
+
+<section class="screen" id="screen4">
+
+    <div class="card">
+
+        <h1>First Surprise 🎂</h1>
+
+        <p>
+            Make a wish...
+            <br>
+            Then tap the candle. ✨
+        </p>
+
+        <div class="cake" onclick="blowCandle()">
+
+            <div class="candle">
+                <div class="flame" id="flame">🔥</div>
+            </div>
+
+            <div class="cake-top"></div>
+
+            <div class="cake-body"></div>
+
+        </div>
+
+        <p id="cakeText">
+            Tap the candle 🎂
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SCREEN 5 : BIRTHDAY WISH
+========================= -->
+
+<section class="screen" id="screen5">
+
+    <div class="card">
+
+        <div style="font-size:70px">🎉</div>
+
+        <h1>
+            Happy Birthday
+            <br>
+            <span class="pink">Arya</span> ❤️
+        </h1>
+
+        <p>
+            Today isn't just another day.
+            It's the beginning of another beautiful
+            chapter of your life.
+        </p>
+
+        <p>
+            May your dreams become reality,
+            your smile become brighter,
+            and your days become filled with
+            beautiful moments. ✨
+        </p>
+
+        <button onclick="nextScreen(6)">
+            There's More... 💫
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SCREEN 6 : MEMORIES
+========================= -->
+
+<section class="screen" id="screen6">
+
+    <div class="card">
+
+        <h1>Three Little Wishes 🌸</h1>
+
+        <p>
+            Tap each one. 💖
+        </p>
+
+        <div class="memories">
+
+            <div class="memory" onclick="openMemory(this)">
+                <span>🌸</span>
+                <b>Happiness</b>
+                <p>
+                    May you always have
+                    a reason to smile.
+                </p>
+            </div>
+
+            <div class="memory" onclick="openMemory(this)">
+                <span>✨</span>
+                <b>Dreams</b>
+                <p>
+                    May every dream you chase
+                    bring you closer to success.
+                </p>
+            </div>
+
+            <div class="memory" onclick="openMemory(this)">
+                <span>💫</span>
+                <b>Future</b>
+                <p>
+                    May your future be even
+                    better than you imagine.
+                </p>
+            </div>
+
+        </div>
+
+        <button onclick="nextScreen(7)">
+            One Message From Me 💌
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SCREEN 7 : MESSAGE
+========================= -->
+
+<section class="screen" id="screen7">
+
+    <div class="card">
+
+        <div style="font-size:60px">💌</div>
+
+        <h1>A Little Message</h1>
+
+        <div class="message-box">
+
+            <p id="typing"></p>
+
+        </div>
+
+        <button onclick="nextScreen(8)">
+            Unlock Your Certificate 🎓
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SCREEN 8 : CERTIFICATE
+========================= -->
+
+<section class="screen" id="screen8">
+
+    <div class="card">
+
+        <div class="certificate">
+
+            <div style="font-size:50px">🎓</div>
+
+            <h2>
+                OFFICIAL BIRTHDAY CERTIFICATE
+            </h2>
+
+            <p>
+                This certificate proudly confirms that
+            </p>
+
+            <div class="name">
+                ARYA
+            </div>
+
+            <p>
+                has successfully completed another
+                amazing year of life.
+            </p>
+
+            <br>
+
+            <p>
+                Status:
+                <b class="pink">Awesome Human ❤️</b>
+            </p>
+
+            <p>
+                Next Chapter:
+                <b>Loading... ⏳</b>
+            </p>
+
+        </div>
+
+        <button onclick="finalSurprise()">
+            Final Surprise 🎉
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SCREEN 9 : FINAL
+========================= -->
+
+<section class="screen" id="screen9">
+
+    <div class="card">
+
+        <div class="big-heart">
+            ❤️
+        </div>
+
+        <h1>
+            Happy Birthday
+            <br>
+            <span class="pink">Arya!</span>
+        </h1>
+
+        <p>
+            Keep smiling.
+            <br>
+            Keep dreaming.
+            <br>
+            Keep being you. ✨
+        </p>
+
+        <br>
+
+        <h2>
+            Have the most beautiful day! 🎂
+        </h2>
+
+        <div style="margin-top:30px">
+
+            <p>
+                Made with ❤️
+            </p>
+
+            <p>
+                <b>— Saurabh 💻</b>
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<script>
+
+/* =========================
+   CREATE STARS
+========================= */
+
+for(let i=0;i<90;i++){
+
+    const star=document.createElement("div");
+
+    star.className="star";
+
+    star.style.left=
+        Math.random()*100+"vw";
+
+    star.style.top=
+        Math.random()*100+"vh";
+
+    star.style.animationDelay=
+        Math.random()*2+"s";
+
+    document.body.appendChild(star);
+}
+
+
+/* =========================
+   SCREEN NAVIGATION
+========================= */
+
+function nextScreen(number){
+
+    document
+    .querySelectorAll(".screen")
+    .forEach(screen=>{
+        screen.classList.remove("active");
+    });
+
+    document
+    .getElementById("screen"+number)
+    .classList.add("active");
+
+    if(number===5){
+        createConfetti();
+    }
+
+    if(number===7){
+        startTyping();
+    }
+
+}
+
+
+/* =========================
+   LOADING SCREEN
+========================= */
+
+setTimeout(()=>{
+
+    nextScreen(2);
+
+},3500);
+
+
+/* =========================
+   CAKE / CANDLE
+========================= */
+
+function blowCandle(){
+
+    const flame=
+        document.getElementById("flame");
+
+    flame.style.display="none";
+
+    document.getElementById("cakeText")
+    .innerText=
+    "Wish made! ✨ Happy Birthday! ❤️";
+
+    createConfetti();
+
+    setTimeout(()=>{
+
+        nextScreen(5);
+
+    },2200);
+
+}
+
+
+/* =========================
+   MEMORY CARDS
+========================= */
+
+function openMemory(card){
+
+    card.classList.toggle("open");
+
+}
+
+
+/* =========================
+   TYPING MESSAGE
+========================= */
+
+function startTyping(){
+
+    const text=
+    "Arya, I don't know if this little website can explain how special today is, but I wanted to make something different instead of just sending a simple 'Happy Birthday'. I hope this new chapter brings you happiness, success, beautiful memories and everything you've been wishing for. Keep smiling and keep shining. You deserve a wonderful year ahead. ❤️";
+
+    const element=
+        document.getElementById("typing");
+
+    element.innerText="";
+
+    let i=0;
+
+    const timer=setInterval(()=>{
+
+        element.innerText+=text[i];
+
+        i++;
+
+        if(i>=text.length){
+
+            clearInterval(timer);
+
+        }
+
+    },35);
+
+}
+
+
+/* =========================
+   CONFETTI
+========================= */
+
+function createConfetti(){
+
+    for(let i=0;i<100;i++){
+
+        const piece=
+            document.createElement("div");
+
+        piece.className="confetti";
+
+        piece.style.left=
+            Math.random()*100+"vw";
+
+        piece.style.background=
+            "hsl("+
+            Math.random()*360+
+            ",100%,65%)";
+
+        piece.style.animationDuration=
+            (2+Math.random()*2)+"s";
+
+        document.body.appendChild(piece);
+
+        setTimeout(()=>{
+
+            piece.remove();
+
+        },4500);
+
+    }
+
+}
+
+
+/* =========================
+   FINAL SURPRISE
+========================= */
+
+function finalSurprise(){
+
+    nextScreen(9);
+
+    createConfetti();
+
+    setInterval(()=>{
+
+        const heart=
+            document.createElement("div");
+
+        heart.className="heart";
+
+        heart.innerText=
+            ["❤️","💖","💕","💗","🌸"]
+            [Math.floor(Math.random()*5)];
+
+        heart.style.left=
+            Math.random()*100+"vw";
+
+        heart.style.animationDuration=
+            (4+Math.random()*3)+"s";
+
+        document.body.appendChild(heart);
+
+        setTimeout(()=>{
+            heart.remove();
+        },7000);
+
+    },500);
+
+}
+
+</script>
+
+</body>
+</html>
